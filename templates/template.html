@@ -1,0 +1,10 @@
+<h1>{{.Title}}</h1>
+{{ range .Story }}
+    <span style="display:block;margin-bottom: 20px;">{{.}}</span>
+{{end}}
+{{ if .Options }}
+    <h3>Story options</h3>
+    {{ range .Options }}
+        <a href="/{{.Ref}}" style="display: block; margin-bottom: 20px;"><span>{{ .Text }}</span></a>
+    {{end}}
+{{end}}
