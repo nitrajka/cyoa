@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -14,12 +15,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const PORT = "8080"
+
 func main() {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
 
-	var fileName string
-	// todo: make port configurable as well
+	var fileName, port string
+	flag.StringVar(&port, "p", PORT, "Port to run APP on.")
 	flag.StringVar(&fileName, "f", "story.json", "json file name to load story from")
 	flag.Parse()
 
@@ -28,14 +31,12 @@ func main() {
 		logger.WithError(err).Fatal("failed to load story parts")
 	}
 
-	// todo: better naming, don't use single char names
-	// example: repo, service, handler
-	r := repositories.NewStoryRepository(storyParts)
-	s := services.NewStoryTeller(r)
-	st := handlers.NewStoryHandler(logger, s)
+	repo := repositories.NewStoryRepository(storyParts)
+	service := services.NewStoryTeller(repo)
+	handler := handlers.NewStoryHandler(logger, service)
 
-	logger.Info("Starting server on port 8080...")
-	if err := http.ListenAndServe(":8080", st); err != nil {
+	logger.WithField("port", port).Info("Starting server...")
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), handler); err != nil {
 		logger.WithError(err).Warn("ListenAndServe failed")
 	}
 }

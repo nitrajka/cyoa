@@ -12,5 +12,3 @@ type StoryOption struct {
 }
 
 type StoryRef string
-
-type ref StoryRef
