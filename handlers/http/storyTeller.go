@@ -36,6 +36,7 @@ func (s *storyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// my own hot reloader
 	tmpl := template.Must(template.ParseFiles("templates/template.html"))
 	if story != nil {
 		err := tmpl.Execute(w, story)

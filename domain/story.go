@@ -1,5 +1,7 @@
 package domain
 
+import "fmt"
+
 type Story struct {
 	Title   string        `json:"title"`
 	Story   []string      `json:"story"`
@@ -9,6 +11,10 @@ type Story struct {
 type StoryOption struct {
 	Text string `json:"text"`
 	Ref  string `json:"arc"`
+}
+
+func (o StoryOption) Format(f fmt.State, verb rune) {
+	fmt.Fprintf(f, o.Ref)
 }
 
 type StoryRef string

@@ -9,7 +9,8 @@ import (
 	"os"
 
 	"chooseYourAdventure/domain"
-	handlers "chooseYourAdventure/handlers/http"
+	handlersCLI "chooseYourAdventure/handlers/cli"
+	handlersHTTP "chooseYourAdventure/handlers/http"
 	"chooseYourAdventure/repositories"
 	"chooseYourAdventure/services"
 	"github.com/sirupsen/logrus"
@@ -21,9 +22,11 @@ func main() {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
 
-	var fileName, port string
-	flag.StringVar(&port, "p", PORT, "Port to run APP on.")
+	var fileName, port, appType string
+	// port only mandatory when running http app type
+	flag.StringVar(&port, "p", PORT, "Port to run APP on. needed only for http mode.")
 	flag.StringVar(&fileName, "f", "story.json", "json file name to load story from")
+	flag.StringVar(&appType, "t", "http", "how to run this app: cli|http")
 	flag.Parse()
 
 	storyParts, err := loadStoryParts(fileName)
@@ -31,13 +34,13 @@ func main() {
 		logger.WithError(err).Fatal("failed to load story parts")
 	}
 
-	repo := repositories.NewStoryRepository(storyParts)
-	service := services.NewStoryTeller(repo)
-	handler := handlers.NewStoryHandler(logger, service)
-
-	logger.WithField("port", port).Info("Starting server...")
-	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), handler); err != nil {
-		logger.WithError(err).Warn("ListenAndServe failed")
+	switch appType {
+	case "http":
+		runHTTP(logger, port, storyParts)
+	case "cli":
+		runInteractiveCLI(logger, storyParts)
+	default:
+		logger.Fatalf("unknown app type: %s", appType)
 	}
 }
 
@@ -58,4 +61,22 @@ func loadStoryParts(fileName string) (map[domain.StoryRef]domain.Story, error) {
 		return nil, err
 	}
 	return storyData, nil
+}
+
+func runInteractiveCLI(logger logrus.FieldLogger, storyParts map[domain.StoryRef]domain.Story) {
+	repo := repositories.NewStoryRepository(storyParts)
+	service := services.NewStoryTeller(repo)
+
+	handlersCLI.StoryTeller(service)
+}
+
+func runHTTP(logger logrus.FieldLogger, port string, storyParts map[domain.StoryRef]domain.Story) {
+	repo := repositories.NewStoryRepository(storyParts)
+	service := services.NewStoryTeller(repo)
+	handler := handlersHTTP.NewStoryHandler(logger, service)
+
+	logger.WithField("port", port).Info("Starting server...")
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), handler); err != nil {
+		logger.WithError(err).Warn("ListenAndServe failed")
+	}
 }
