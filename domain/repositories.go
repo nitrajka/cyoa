@@ -1,5 +1,5 @@
 package domain
 
 type StoryRepository interface {
-	GetSubStory(storyRef StoryRef) (*Story, error)
+	GetSubStory(storyRef ChapterRef) (*Chapter, error)
 }

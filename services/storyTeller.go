@@ -10,6 +10,6 @@ func NewStoryTeller(repository domain.StoryRepository) domain.StoryTellerService
 	return &storyTeller{storyRepository: repository}
 }
 
-func (st *storyTeller) FetchSubStory(ref domain.StoryRef) (*domain.Story, error) {
+func (st *storyTeller) FetchSubStory(ref domain.ChapterRef) (*domain.Chapter, error) {
 	return st.storyRepository.GetSubStory(ref)
 }

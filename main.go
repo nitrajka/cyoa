@@ -44,33 +44,36 @@ func main() {
 	}
 }
 
-func loadStoryParts(fileName string) (map[domain.StoryRef]domain.Story, error) {
+func loadStoryParts(fileName string) (map[domain.ChapterRef]domain.Chapter, error) {
 	f, err := os.Open(fileName)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
+	// another option how to decode json from file
+	//tmp := json.NewDecoder(f)
+	//err := tmp.Decode(&domain.Chapter{})
 	data, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}
 
-	var storyData map[domain.StoryRef]domain.Story
+	var storyData map[domain.ChapterRef]domain.Chapter
 	if err = json.Unmarshal(data, &storyData); err != nil {
 		return nil, err
 	}
 	return storyData, nil
 }
 
-func runInteractiveCLI(logger logrus.FieldLogger, storyParts map[domain.StoryRef]domain.Story) {
+func runInteractiveCLI(logger logrus.FieldLogger, storyParts map[domain.ChapterRef]domain.Chapter) {
 	repo := repositories.NewStoryRepository(storyParts)
 	service := services.NewStoryTeller(repo)
 
 	handlersCLI.StoryTeller(service)
 }
 
-func runHTTP(logger logrus.FieldLogger, port string, storyParts map[domain.StoryRef]domain.Story) {
+func runHTTP(logger logrus.FieldLogger, port string, storyParts map[domain.ChapterRef]domain.Chapter) {
 	repo := repositories.NewStoryRepository(storyParts)
 	service := services.NewStoryTeller(repo)
 	handler := handlersHTTP.NewStoryHandler(logger, service)

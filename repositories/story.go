@@ -3,14 +3,14 @@ package repositories
 import "chooseYourAdventure/domain"
 
 type storyRepository struct {
-	storyParts map[domain.StoryRef]domain.Story
+	storyParts map[domain.ChapterRef]domain.Chapter
 }
 
-func NewStoryRepository(parts map[domain.StoryRef]domain.Story) domain.StoryRepository {
+func NewStoryRepository(parts map[domain.ChapterRef]domain.Chapter) domain.StoryRepository {
 	return &storyRepository{storyParts: parts}
 }
 
-func (s *storyRepository) GetSubStory(ref domain.StoryRef) (*domain.Story, error) { // todo: remove error
+func (s *storyRepository) GetSubStory(ref domain.ChapterRef) (*domain.Chapter, error) { // todo: remove error
 	if storyRepo, ok := s.storyParts[ref]; ok {
 		return &storyRepo, nil
 	}

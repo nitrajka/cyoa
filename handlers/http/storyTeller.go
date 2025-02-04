@@ -32,7 +32,7 @@ func (s *storyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	story, err := s.storyTellerService.FetchSubStory(subStoryId)
 	if err != nil {
 		s.logger.WithError(err).WithField("substoryRef", subStoryId).Error("failed to fetch sub story")
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "Something went wrong...", http.StatusInternalServerError)
 		return
 	}
 
@@ -42,6 +42,10 @@ func (s *storyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		err := tmpl.Execute(w, story)
 		if err != nil {
 			s.logger.WithError(err).Error("failed to execute template")
+			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "Something went wrong...", http.StatusInternalServerError)
 		}
+		return
 	}
+	http.Error(w, "Chapter not found.", http.StatusNotFound)
 }

@@ -9,8 +9,8 @@ import (
 )
 
 func StoryTeller(service domain.StoryTellerService) {
-	nextStoryPartId := domain.StoryRef(mappers.PathToSubStoryId("/"))
-	var data *domain.Story
+	nextStoryPartId := domain.ChapterRef(mappers.PathToSubStoryId("/"))
+	var data *domain.Chapter
 	var err error
 	for nextStoryPartId != "" {
 		data, err = service.FetchSubStory(nextStoryPartId)
@@ -22,16 +22,16 @@ func StoryTeller(service domain.StoryTellerService) {
 	}
 }
 
-func displayStoryPartAndChooseNextOption(storyPart *domain.Story) domain.StoryRef {
-	fmt.Println(storyPart.Title + ":     " + strings.Join(storyPart.Story, "        "))
+func displayStoryPartAndChooseNextOption(storyPart *domain.Chapter) domain.ChapterRef {
+	fmt.Println(storyPart.Title + ":     " + strings.Join(storyPart.Paragraphs, "        "))
 
 	templates := &promptui.SelectTemplates{
-		Label:    "Select Story",
+		Label:    "Select Chapter",
 		Active:   "\U0001F336 {{ .Ref | red }}",
 		Inactive: "   {{ .Ref | cyan }}",
 		// Selected: "\U0001F336 {{ .Text | red | cyan }}",
 		Details: `
-		--------- Story continuation - {{ .Ref }} ----------
+		--------- Chapter continuation - {{ .Ref }} ----------
 		{{ .Text }}`,
 	}
 
@@ -58,6 +58,6 @@ func displayStoryPartAndChooseNextOption(storyPart *domain.Story) domain.StoryRe
 	}
 
 	fmt.Printf("You choose number %s\n", result)
-	return domain.StoryRef(result)
+	return domain.ChapterRef(result)
 
 }

@@ -1,5 +1,5 @@
 package domain
 
 type StoryTellerService interface {
-	FetchSubStory(StoryRef) (*Story, error)
+	FetchSubStory(ChapterRef) (*Chapter, error)
 }

@@ -2,10 +2,10 @@ package domain
 
 import "fmt"
 
-type Story struct {
-	Title   string        `json:"title"`
-	Story   []string      `json:"story"`
-	Options []StoryOption `json:"options"`
+type Chapter struct {
+	Title      string        `json:"title"`
+	Paragraphs []string      `json:"story"`
+	Options    []StoryOption `json:"options"`
 }
 
 type StoryOption struct {
@@ -17,4 +17,4 @@ func (o StoryOption) Format(f fmt.State, verb rune) {
 	fmt.Fprintf(f, o.Ref)
 }
 
-type StoryRef string
+type ChapterRef string
