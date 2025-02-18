@@ -1,12 +1,6 @@
 package main
 
 import (
-	"chooseYourAdventure/domain"
-	mappers "chooseYourAdventure/handlers"
-	handlersCLI "chooseYourAdventure/handlers/cli"
-	handlersHTTP "chooseYourAdventure/handlers/http"
-	"chooseYourAdventure/repositories"
-	"chooseYourAdventure/services"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -15,6 +9,13 @@ import (
 	"io"
 	"net/http"
 	"os"
+
+	"chooseYourAdventure/domain"
+	mappers "chooseYourAdventure/handlers"
+	handlersCLI "chooseYourAdventure/handlers/cli"
+	handlersHTTP "chooseYourAdventure/handlers/http"
+	"chooseYourAdventure/repositories"
+	"chooseYourAdventure/services"
 )
 
 const PORT = "8080"
