@@ -93,8 +93,13 @@ func runHTTP(logger logrus.FieldLogger, port string, storyParts map[domain.Chapt
 	// Because we use / (base path) all incoming requests not
 	// mapped elsewhere will be sent here.
 	mux.Handle("/", handlersHTTP.NewStoryHandler(logger, service))
+	mux.HandleFunc("/health", healthHandler)
 	logger.WithField("port", port).Info("Starting server...")
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), mux); err != nil {
 		logger.WithError(err).Warn("ListenAndServe failed")
 	}
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
