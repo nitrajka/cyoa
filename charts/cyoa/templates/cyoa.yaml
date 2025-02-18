@@ -4,36 +4,20 @@ metadata:
   name: cyoa
   labels:
     app: cyoa
-    chart: cyoa
-    release: some-name
-    heritage: Helm
-    protocol: http
 spec:
   replicas: 3
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
   selector:
     matchLabels:
       app: cyoa
-      release: some-name
-      protocol: http
-
   template:
     metadata:
       labels:
         app: cyoa
-        release: some-name
-        protocol: http
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-        - name: localcopy-labels-http
-          image: "/cyoa:latest"
-          command: ["/cyoa", "-f", "/templates/story.json"]
-#          args: ["http"]
+        - name: cyoa
+          image: "cyoa:1.0"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -41,7 +25,7 @@ spec:
               memory: 1Gi
             requests:
               cpu: "1"
-              memory: 500MB
+              memory: 0.5Gi
           ports:
             - containerPort: 8080
           readinessProbe:
